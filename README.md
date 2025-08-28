@@ -33,7 +33,7 @@ A simple web interface is available at `http://localhost:8000/`:
 Clone repository:
 
 ```sh
-git clone <your-repo-url>
+git clone https://github.com/supershaneski/python-sample-server.git
 
 cb projectname
 ```
