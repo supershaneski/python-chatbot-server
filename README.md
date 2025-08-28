@@ -30,7 +30,7 @@ A simple web interface is available at `http://localhost:8000/`:
 
 ## Setup
 
-Clone repository
+Clone repository:
 
 ```sh
 git clone <your-repo-url>
@@ -38,7 +38,7 @@ git clone <your-repo-url>
 cb projectname
 ```
 
-Setup virtual environment
+Setup virtual environment (optional, works with any Python 3 version):
 
 ```sh
 python3 -m venv venv
@@ -47,7 +47,7 @@ python3 -m venv venv
 > [!NOTE] 
 > For all python commands, you can use `python` instead of `python3` depending on your system.
 
-Enter the virtual environment
+Enter the virtual environment:
 
 ```sh
 source venv/bin/activate  # Linux/macOS
@@ -60,6 +60,27 @@ Install dependencies
 ```sh
 pip install -r requirements.txt
 ```
+
+Copy the `.env.example` file to `.env`:
+
+```sh
+cp .env.example .env  # Linux/macOS
+
+copy .env.example .env  # Windows
+```
+
+(Optional) Edit .env to set a custom port (e.g., SERVER_PORT=8080).
+
+Example `.env`:
+
+```
+SERVER_PORT=8080
+```
+
+The server defaults to port 8000 if no .env file or SERVER_PORT is set.
+
+If you use a custom port, access the web interface at http://localhost:<port> (e.g., http://localhost:8080).
+
 
 Now, to run the server
 
