@@ -4,7 +4,38 @@ import urllib.parse
 import socketserver
 import os
 import random
+
 from google import genai
+from google.genai import types
+
+
+def load_env():
+    """Load environment variables from .env file."""
+    env_file = '.env'
+    if os.path.exists(env_file):
+        with open(env_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    key, value = line.split('=', 1)
+                    os.environ[key.strip()] = value.strip()
+
+try:
+    load_env()
+    client = genai.Client(
+        api_key=os.environ.get("GEMINI_API_KEY"),
+    )
+    model = "gemini-2.5-flash-lite"
+    generate_content_config = types.GenerateContentConfig(
+        temperature=0.5,
+        thinking_config = types.ThinkingConfig(
+            thinking_budget=0,
+        ),
+    )
+    gemini_mode = True
+except (ImportError, KeyError, Exception) as e:
+    print(f"Warning: Failed to initialize Gemini API: {e}. Using mock replies.")
+    gemini_mode = None
 
 # In-memory storage for messages
 messages = []
@@ -49,9 +80,26 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
                 
                 message_id += 1
 
-                # Mocking model reply
+                # Sample mock replies
                 responses = ['I see', 'Okay', 'Could you tell me more?', 'Interesting', 'Thanks for sharing', 'Alright', 'Got it']
-                model_reply = {'id': message_id, 'role': 'model', 'parts': [{ 'text': random.choice(responses) }]}
+                
+                if gemini_mode:
+                    # Generate model reply
+                    try:
+                        contents = [{k: v for k, v in d.items() if k != 'id'} for d in messages]
+                        response = client.models.generate_content(
+                            model="gemini-2.5-flash",
+                            contents=contents
+                        )
+                        model_text = response.text
+                    except Exception as e:
+                        print(f"Warning: Gemini API call failed: {e}. Using mock reply.")
+                        model_text = random.choice(responses)
+                else:
+                    # Mocking model reply
+                    model_text = random.choice(responses)
+
+                model_reply = {'id': message_id, 'role': 'model', 'parts': [{ 'text': model_text }]}
                 messages.append(model_reply)
                 
                 message_id += 1
@@ -83,17 +131,6 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps({'error': message}).encode())
-
-def load_env():
-    """Load environment variables from .env file."""
-    env_file = '.env'
-    if os.path.exists(env_file):
-        with open(env_file, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith('#'):
-                    key, value = line.split('=', 1)
-                    os.environ[key.strip()] = value.strip()
 
 def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000):
     # Load .env file
