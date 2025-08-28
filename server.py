@@ -83,7 +83,23 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({'error': message}).encode())
 
+def load_env():
+    """Load environment variables from .env file."""
+    env_file = '.env'
+    if os.path.exists(env_file):
+        with open(env_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    key, value = line.split('=', 1)
+                    os.environ[key.strip()] = value.strip()
+                    
 def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000):
+    # Load .env file
+    load_env()
+    # Get port from environment variable, fallback to default
+    port = int(os.environ.get('SERVER_PORT', port))
+
     socketserver.TCPServer.allow_reuse_address = True
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
