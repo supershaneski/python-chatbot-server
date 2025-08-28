@@ -3,6 +3,14 @@ python-sample-server
 
 A sample HTTP server using python.
 
+# Endpoints
+
+- `POST /tasks`: Create a task
+- `GET /tasks`: List all tasks
+- `GET /tasks/<id>`: Get a task by ID
+- `PUT /tasks/<id>`: Update a task
+- `DELETE /tasks/<id>`: Delete a task
+
 # Setup
 
 Clone repository
