@@ -3,6 +3,7 @@ import json
 import urllib.parse
 import socketserver
 import os
+import random
 
 # In-memory storage for messages
 messages = []
@@ -48,7 +49,8 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
                 message_id += 1
 
                 # Mocking model reply
-                model_reply = {'id': message_id, 'role': 'model', 'parts': [{ 'text': 'Lorem ipsum dolor' }]}
+                responses = ['I see', 'Okay', 'Could you tell me more?', 'Interesting', 'Thanks for sharing', 'Alright', 'Got it']
+                model_reply = {'id': message_id, 'role': 'model', 'parts': [{ 'text': random.choice(responses) }]}
                 messages.append(model_reply)
                 
                 message_id += 1
