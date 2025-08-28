@@ -69,18 +69,12 @@ cp .env.example .env  # Linux/macOS
 copy .env.example .env  # Windows
 ```
 
-(Optional) Edit .env to set a custom port (e.g., SERVER_PORT=8080).
+Edit `.env` with your Gemini API key:
 
-Example `.env`:
-
+```txt
+SERVER_PORT=8000
+GEMINI_API_KEY=your_actual_api_key_here
 ```
-SERVER_PORT=8080
-```
-
-The server defaults to port 8000 if no .env file or SERVER_PORT is set.
-
-If you use a custom port, access the web interface at http://localhost:<port> (e.g., http://localhost:8080).
-
 
 Now, to run the server
 
