@@ -1,6 +1,6 @@
 # python-sample-server
 
-A sample HTTP server using Python, serving as a chatbot backend with a web interface.
+A sample HTTP server using Python, serving as a chatbot backend with a web interface, powered by Google’s Gemini API.
 
 ## Endpoints
 
@@ -55,7 +55,7 @@ source venv/bin/activate  # Linux/macOS
 venv\Scripts\activate     # Windows
 ```
 
-Install dependencies
+Install dependencies (required for Gemini API):
 
 ```sh
 pip install -r requirements.txt
