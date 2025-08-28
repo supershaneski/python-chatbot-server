@@ -1,13 +1,19 @@
-python-sample-server
-=====
+# python-sample-server
 
-A sample HTTP server using python.
+A sample HTTP server using Python, serving as a chatbot backend with a web interface.
 
 ## Endpoints
 
-- `POST /chat`: Send message
-- `GET /messages`: List all messages
-- `DELETE /messages`: Delete all messages (reset chat)
+- `POST /chat`: Send a user message and get a mock model reply.
+  - Example: `curl -X POST -H "Content-Type: application/json" -d '{"text":"Hello"}' http://localhost:8000/chat`
+- `GET /messages`: Retrieve the full conversation history.
+  - Example: `curl http://localhost:8000/messages`
+- `DELETE /messages`: Delete all messages to reset the chat.
+  - Example: `curl -X DELETE http://localhost:8000/messages`
+
+> [!NOTE] 
+> You can run the `GET /messages` endpoint directly in your browser.
+> - Type this in the address bar: `http://localhost:8000/messages`.
 
 ## Web Interface
 
@@ -16,9 +22,11 @@ A simple web interface is available at `http://localhost:8000/`:
 - View the conversation history in the chat window.
 - Click **Reset Chat** to clear the conversation history.
 
-> [!NOTE] 
-> You can also use your actual IP address instead of `localhost`.
-> This is useful if you want to load the web interface using remote devices (i.e. smartphone, tablet) connected to your WIFI/LAN.
+> [!NOTE]
+> You can use your actual IP address instead of `localhost` to access the web interface from remote devices (e.g., smartphone, tablet) on the same Wi-Fi/LAN. To find your IP address:
+> - Linux/macOS: Run `ifconfig` or `ip addr`.
+> - Windows: Run `ipconfig` in Command Prompt.
+> Ensure port 8000 is open in your firewall settings.
 
 ## Setup
 
@@ -37,7 +45,7 @@ python3 -m venv venv
 ```
 
 > [!NOTE] 
-> For all python commands, you can use `python` instead of `python3`.
+> For all python commands, you can use `python` instead of `python3` depending on your system.
 
 Enter the virtual environment
 
@@ -59,8 +67,11 @@ Now, to run the server
 python3 server.py
 ```
 
+To stop the server, press `Ctrl+C` in the terminal.
+
 To exit the virtual environment
 
 ```sh
 deactivate
 ```
+
