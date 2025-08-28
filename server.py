@@ -4,6 +4,7 @@ import urllib.parse
 import socketserver
 import os
 import random
+from google import genai
 
 # In-memory storage for messages
 messages = []
@@ -93,7 +94,7 @@ def load_env():
                 if line and not line.startswith('#'):
                     key, value = line.split('=', 1)
                     os.environ[key.strip()] = value.strip()
-                    
+
 def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000):
     # Load .env file
     load_env()
