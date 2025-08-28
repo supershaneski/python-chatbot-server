@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import urllib.parse
 import socketserver
+import os
 
 # In-memory storage for messages
 messages = []
@@ -12,7 +13,17 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         parsed_path = urllib.parse.urlparse(self.path)
         path = parsed_path.path
 
-        if path == '/messages':
+        if path == '/':
+            # Serve the HTML file
+            try:
+                with open('index.html', 'rb') as file:
+                    self.send_response(200)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                    self.wfile.write(file.read())
+            except FileNotFoundError:
+                self.send_error(404, 'HTML file not found')
+        elif path == '/messages':
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()

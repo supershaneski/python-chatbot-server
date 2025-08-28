@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        #chat-history {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 200px;
+            max-height: 300px;
+            margin-bottom: 10px;
+            overflow-y: auto;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        .user {
+            background-color: #e6f3ff;
+        }
+        .model {
+            background-color: #f0f0f0;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        input[type="text"]::placeholder {
+            font-size: 0.8rem;
+        }
+        button {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <div id="chat-history"></div>
+    <input type="text" id="message-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="resetChat()">Reset Chat</button>
+
+    <script>
+        // Fetch and display conversation history
+        async function fetchMessages() {
+            const response = await fetch('/messages');
+            const messages = await response.json();
+            const chatHistory = document.getElementById('chat-history');
+            chatHistory.innerHTML = '';
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.role}`;
+                div.textContent = `${msg.role}: ${msg.parts[0].text}`;
+                chatHistory.appendChild(div);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            });
+        }
+
+        // Send a new message
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text) return;
+            await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            input.value = '';
+            fetchMessages();
+        }
+
+        // Reset chat history
+        async function resetChat() {
+            await fetch('/messages', { method: 'DELETE' });
+            fetchMessages();
+        }
+
+        // Initial load of messages
+        fetchMessages();
+
+        // Allow sending message with Enter key
+        document.getElementById('message-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
