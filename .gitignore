@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Python virtual environment
+venv/
+env/
+
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python editor and IDE files
+*.swp
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python package and build files
+dist/
+build/
+*.egg-info/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Environment variable files
+.env
+*.env
+
+# My ignore files
+_bin/
+*.bu.py
+*.bu.md
