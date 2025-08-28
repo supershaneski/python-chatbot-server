@@ -7,7 +7,7 @@ A sample HTTP server using python.
 
 - `POST /chat`: Send message
 - `GET /messages`: List all messages
-- `GET /messages/<id>`: Get a message by ID
+- `DELETE /messages`: Delete all messages (reset chat)
 
 # Setup
 
