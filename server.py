@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import urllib.parse
+import socketserver
 
 # In-memory storage for tasks
 tasks = []
@@ -12,13 +13,11 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         path = parsed_path.path
 
         if path == '/tasks':
-            # Read all tasks
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(tasks).encode())
         elif path.startswith('/tasks/'):
-            # Read a specific task
             try:
                 task_id = int(path.split('/')[-1])
                 task = next((task for task in tasks if task['id'] == task_id), None)
@@ -36,7 +35,6 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == '/tasks':
-            # Create a task
             global task_id
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
@@ -62,7 +60,6 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         path = parsed_path.path
 
         if path.startswith('/tasks/'):
-            # Update a task
             try:
                 task_id = int(path.split('/')[-1])
                 task = next((task for task in tasks if task['id'] == task_id), None)
@@ -90,7 +87,6 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         path = parsed_path.path
 
         if path.startswith('/tasks/'):
-            # Delete a task
             try:
                 task_id = int(path.split('/')[-1])
                 global tasks
@@ -115,10 +111,18 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({'error': message}).encode())
 
 def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000):
+    # Enable socket reuse to avoid "Address already in use" on restart
+    socketserver.TCPServer.allow_reuse_address = True
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f'Starting server on port {port}...')
-    httpd.serve_forever()
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\nShutting down server...")
+        httpd.server_close()
+    finally:
+        print("Server stopped.")
 
 if __name__ == '__main__':
     run()

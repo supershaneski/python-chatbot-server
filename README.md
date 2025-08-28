@@ -17,14 +17,18 @@ Setup virtual environment
 
 ```sh
 python3 -m venv venv
+```
 
+> [!NOTE] 
+> For all python commands, you can use `python` instead of `python3`.
+
+Enter the virtual environment
+
+```sh
 source venv/bin/activate  # Linux/macOS
 # or
 venv\Scripts\activate     # Windows
 ```
-
-> [!NOTE] 
-> You can use `python` instead of `python3`.
 
 Install dependencies
 
