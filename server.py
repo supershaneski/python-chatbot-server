@@ -17,19 +17,6 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(messages).encode())
-        elif path.startswith('/messages/'):
-            try:
-                message_id = int(path.split('/')[-1])
-                message = next((message for message in messages if message['id'] == message_id), None)
-                if message:
-                    self.send_response(200)
-                    self.send_header('Content-type', 'application/json')
-                    self.end_headers()
-                    self.wfile.write(json.dumps(message).encode())
-                else:
-                    self.send_error(404, 'Message not found')
-            except ValueError:
-                self.send_error(400, 'Invalid message ID')
         else:
             self.send_error(404, 'Not found')
 
@@ -65,6 +52,18 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
         else:
             self.send_error(404, 'Not found')
     
+    def do_DELETE(self):
+        if self.path == '/messages':
+            global messages, message_id
+            messages = []  # Clear all messages
+            message_id = 1  # Reset message ID
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'message': 'Chat history cleared'}).encode())
+        else:
+            self.send_error(404, 'Not found')
+
     def send_error(self, code, message):
         self.send_response(code)
         self.send_header('Content-type', 'application/json')
