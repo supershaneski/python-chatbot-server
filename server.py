@@ -19,7 +19,6 @@ except ImportError:
 messages = []
 message_id = 1
 
-# Load environment variables once when the server starts
 def load_env():
     """Load environment variables from .env file."""
     env_file = '.env'
@@ -39,8 +38,6 @@ def load_env():
 
 # Initialize Gemini API client if available
 def init_gemini():
-    # Load environment variables
-    load_env()
     """Initialize the Gemini API client or return None if not available."""
     if genai is None:
         return None
@@ -62,6 +59,8 @@ def init_gemini():
         print(f"Warning: Failed to initialize Gemini API: {e}. Using mock replies.")
         return None
 
+# Load environment variables and initialize Gemini
+load_env()  # Load .env before initializing Gemini as it contains the Gemini API key
 gemini = init_gemini()
 
 class SimpleRESTServer(BaseHTTPRequestHandler):
@@ -181,8 +180,6 @@ class SimpleRESTServer(BaseHTTPRequestHandler):
 
 def run(server_class=HTTPServer, handler_class=SimpleRESTServer, port=8000):
     """Start the HTTP server."""
-    # Load environment variables
-    load_env()
     # Get port from environment variable, fallback to default
     port = int(os.environ.get('SERVER_PORT', port))
 
