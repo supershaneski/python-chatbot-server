@@ -15,34 +15,33 @@ To allow for quick testing and exploration, a simple web interface is provided. 
 Follow these steps to run the chatbot server and try it out:
 
 1. **Clone the repository**:
-   ```sh
-   git clone https://github.com/supershaneski/python-sample-server.git
+  ```sh
+  git clone https://github.com/supershaneski/python-sample-server.git
 
-   cd python-sample-server
-   ```
+  cd python-sample-server
+  ```
 
 2. **Set up a virtual environment** (optional but recommended):
-   ```sh
-   python3 -m venv venv
-   ```
-   Activate it:
-   ```sh
-   source venv/bin/activate  # Linux/macOS
-   # or
-   venv\Scripts\activate     # Windows
-   ```
-   > [!NOTE]  
-   > Depending on your system, you can use `python` instead of `python3` for all commands.
+  ```sh
+  python3 -m venv venv
+  ```
+  Activate it:
+  ```sh
+  source venv/bin/activate  # Linux/macOS
+  # or
+  venv\Scripts\activate     # Windows
+  ```
+  > [!NOTE]  
+  > Depending on your system, you can use `python` instead of `python3` for all commands.
 
+3. **Install dependencies** (only needed for Gemini API integration):
+  ```sh
+  pip install -r requirements.txt
+  ```
+  > [!NOTE]  
+  > The `requirements.txt` specifies `google-genai==1.32.0` to ensure compatibility with the [Gemini API](https://ai.google.dev/gemini-api/docs/quickstart#install-gemini-library). Other dependencies are installed automatically by `pip`.
 
-1. **Install dependencies** (only needed for Gemini API integration):
-   ```sh
-   pip install -r requirements.txt
-   ```
-   > [!NOTE]  
-   > The `requirements.txt` specifies `google-genai==1.32.0` to ensure compatibility with the [Gemini API](https://ai.google.dev/gemini-api/docs/quickstart#install-gemini-library). Other dependencies are installed automatically by `pip`.
-
-2. **Set up the environment file**:
+4. **Set up the environment file**:
    Copy the example file:
    ```sh
    cp .env.example .env  # Linux/macOS
@@ -56,12 +55,12 @@ Follow these steps to run the chatbot server and try it out:
    ```
    If you don’t have an API key, leave `GEMINI_API_KEY` blank to use mock responses.
 
-3. **Run the server**:
+5. **Run the server**:
    ```sh
    python3 server.py
    ```
 
-4. **Try it out**:
+6. **Try it out**:
    - Open your browser to `http://localhost:8000/` to use the web interface.
    - Type a message (e.g., “Hello”) and press Enter or click **Send**.
    - Click **Reset Chat** to clear the conversation.
@@ -71,10 +70,10 @@ Follow these steps to run the chatbot server and try it out:
      curl http://localhost:8000/messages
      ```
 
-5. **Stop the server**:
+7. **Stop the server**:
    Press `Ctrl+C` in the terminal.
 
-6. **Exit the virtual environment** (if used):
+8. **Exit the virtual environment** (if used):
    ```sh
    deactivate
    ```
