@@ -10,9 +10,9 @@
             font-family: Arial, sans-serif;
             max-width: 600px;
             margin: 20px auto;
-            padding: 0 20px;
+            padding: 0 10px;
         }
-        input, textarea, select {
+        input, button {
             font-size: 16px;
         }
         #chat-history {
@@ -20,15 +20,19 @@
             padding: 10px;
             min-height: 200px;
             max-height: 300px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             overflow-y: auto;
+            background-color: #fff;
         }
         #control-panel {
-            margin-top: .5rem;
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 10px;
         }
         .message {
-            margin: 5px 0;
-            padding: 5px;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 4px;
         }
         .user {
             background-color: #e6f3ff;
@@ -37,70 +41,115 @@
             background-color: #f0f0f0;
         }
         input[type="text"] {
-            width: calc(100% - 12px);
-            padding: 5px;
-            margin-right: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
         }
         input[type="text"]::placeholder {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            color: #888;
         }
         button {
-            padding: 5px 10px;
+            padding: 8px 15px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            color: #555;
+            font-size: 0.9rem;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
     <h1>Chatbot</h1>
     <div id="chat-history"></div>
-    <input type="text" id="message-input" placeholder="Type your message...">
+    <input type="text" id="message-input" placeholder="Type your message..." aria-label="Message input">
     <div id="control-panel">
-        <button id="send-button" onclick="sendMessage()">Send</button>
-        <button id="reset-button" onclick="resetChat()">Reset Chat</button>
+        <button id="send-button" onclick="sendMessage()" aria-label="Send message">Send</button>
+        <button id="reset-button" onclick="resetChat()" aria-label="Reset chat">Reset Chat</button>
     </div>
+    <div id="status"></div>
 
     <script>
+        // Update status message
+        function setStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
         // Fetch and display conversation history
         async function fetchMessages() {
-            const response = await fetch('/messages');
-            const messages = await response.json();
-            const chatHistory = document.getElementById('chat-history');
-            chatHistory.innerHTML = '';
-            messages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = `message ${msg.role}`;
-                div.textContent = `${msg.role}: ${msg.parts[0].text}`;
-                chatHistory.appendChild(div);
-                chatHistory.scrollTop = chatHistory.scrollHeight;
-            });
+            try {
+                const response = await fetch('/messages');
+                if (!response.ok) throw new Error('Failed to fetch messages');
+                const messages = await response.json();
+                const chatHistory = document.getElementById('chat-history');
+                chatHistory.innerHTML = '';
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `message ${msg.role}`;
+                    div.textContent = `${msg.role}: ${msg.parts[0].text}`;
+                    chatHistory.appendChild(div);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                });
+                setStatus('');
+            } catch (error) {
+                setStatus('Error: Could not load messages. Is the server running?');
+            }
         }
 
         // Send a new message
         async function sendMessage() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text) {
+                setStatus('Please enter a message.');
+                return;
+            }
 
             input.disabled = true;
             document.getElementById('send-button').disabled = true;
             document.getElementById('reset-button').disabled = true;
+            setStatus('Sending...');
 
-            await fetch('/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text })
-            });
-            input.value = '';
-            fetchMessages();
-
-            input.disabled = false;
-            document.getElementById('send-button').disabled = false;
-            document.getElementById('reset-button').disabled = false;
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                if (!response.ok) throw new Error('Failed to send message');
+                input.value = '';
+                await fetchMessages();
+            } catch (error) {
+                setStatus('Error: Could not send message. Try again.');
+            } finally {
+                input.disabled = false;
+                document.getElementById('send-button').disabled = false;
+                document.getElementById('reset-button').disabled = false;
+            }
         }
 
         // Reset chat history
         async function resetChat() {
-            await fetch('/messages', { method: 'DELETE' });
-            fetchMessages();
+            try {
+                const response = await fetch('/messages', { method: 'DELETE' });
+                if (!response.ok) throw new Error('Failed to reset chat');
+                await fetchMessages();
+                setStatus('Chat history cleared.');
+            } catch (error) {
+                setStatus('Error: Could not reset chat. Try again.');
+            }
         }
 
         // Initial load of messages
