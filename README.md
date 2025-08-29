@@ -1,4 +1,4 @@
-# python-sample-server
+# python-chatbot-server
 
 A Python-based **RESTful chatbot API server** powered by [Google’s Gemini API](https://ai.google.dev/gemini-api/docs). The API is designed for flexible integration with any frontend, including web apps built with React or mobile apps with Flutter.
 
@@ -16,9 +16,9 @@ Follow these steps to run the chatbot server and try it out:
 
 1. **Clone the repository**:
   ```sh
-  git clone https://github.com/supershaneski/python-sample-server.git
+  git clone https://github.com/supershaneski/python-chatbot-server.git
 
-  cd python-sample-server
+  cd python-chatbot-server
   ```
 
 2. **Set up a virtual environment** (optional but recommended):
