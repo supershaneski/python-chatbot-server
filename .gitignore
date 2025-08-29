@@ -36,5 +36,6 @@ build/
 
 # My ignore files
 _bin/
+*.bu.txt
 *.bu.py
 *.bu.md
