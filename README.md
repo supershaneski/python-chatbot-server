@@ -1,6 +1,14 @@
 # python-sample-server
 
-A sample HTTP server written in Python, serving as a chatbot backend with a simple web interface. It's powered by [Google’s Gemini API](https://ai.google.dev/gemini-api/docs) for generating responses. If no Gemini API key is provided, the server falls back to mock replies, allowing beginners to test and explore the code without needing an API key right away.
+A Python-based **RESTful chatbot API server** powered by [Google’s Gemini API](https://ai.google.dev/gemini-api/docs). The API is designed for flexible integration with any frontend, including web apps built with React or mobile apps with Flutter.
+
+To allow for quick testing and exploration, a simple web interface is provided. For developers who may not have an API key, the server includes a fallback to mock responses.
+
+---
+
+**RESTful Chatbot APIサーバー**。[Google Gemini API](https://ai.google.dev/gemini-api/docs) を活用した、Python 製のサーバーです。React の Web アプリや Flutter のモバイルアプリなど、あらゆるフロントエンドと連携できるよう設計されています。
+
+テストとコードの確認をスムーズに行えるよう、シンプルな Web インターフェースも用意しました。API キーがなくても動作するよう、モック応答にフォールバックする機能も備わっています。
 
 ## Get Started
 
@@ -9,7 +17,7 @@ Follow these steps to run the chatbot server and try it out:
 1. **Clone the repository**:
    ```sh
    git clone https://github.com/supershaneski/python-sample-server.git
-   
+
    cd python-sample-server
    ```
 
