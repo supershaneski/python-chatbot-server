@@ -8,7 +8,8 @@ Follow these steps to run the chatbot server and try it out:
 
 1. **Clone the repository**:
    ```sh
-   git clone <your-repo-url>
+   git clone https://github.com/supershaneski/python-sample-server.git
+   
    cd python-sample-server
    ```
 
@@ -176,3 +177,8 @@ The server stores messages in memory, shared across all users. This means multip
 - **Server won’t start**: If port 8000 is in use, edit `.env` to set a different `SERVER_PORT` (e.g., `SERVER_PORT=8001`) and restart.
 - **No Gemini responses**: Ensure `GEMINI_API_KEY` is set in `.env`. If left blank, the server uses mock replies.
 - **Web interface errors**: Check that `index.html` is in the same directory as `server.py` and that the server is running.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
+
