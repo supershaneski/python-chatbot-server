@@ -53,6 +53,9 @@ def init_gemini():
             'config': types.GenerateContentConfig(
                 temperature=0.5,
                 thinking_config=types.ThinkingConfig(thinking_budget=0),
+                system_instruction=[
+                    types.Part.from_text(text="""You are a friendly cat assistant. You communicate in a clear and concise way while keeping a light cat-like personality—curious, playful, and helpful."""),
+                ],
             )
         }
     except Exception as e:
