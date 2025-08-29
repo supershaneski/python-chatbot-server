@@ -173,7 +173,34 @@ A simple web interface is available at `http://localhost:8000/`:
 
 This project uses Gemini's basic [text generation](https://ai.google.dev/gemini-api/docs/text-generation) feature. The SDK also supports [multi-turn conversations (chat)](https://ai.google.dev/gemini-api/docs/text-generation#multi-turn-conversations), but we're not using it here to keep things simple and focused on core concepts.
 
+### API Key Setup
 You can generate a free Gemini API key from [Google's AI Studio](https://aistudio.google.com/apikey). The key gives access to all available models with [rate limits](https://ai.google.dev/gemini-api/docs/rate-limits), which are sufficient for testing. If you don’t have an API key, the server uses mock responses, so you can still try the chatbot.
+
+### Configuration Details
+The project uses the following configuration for the Gemini API:
+
+- **Model**: `gemini-2.5-flash` (select from [available models](https://ai.google.dev/gemini-api/docs/models)).
+- **Temperature**: `0.5` — Controls response randomness. A lower value (e.g., `0.1`) makes responses deterministic (same prompt, same reply), while a higher value adds variety, enhancing the chatbot's conversational feel.
+- **Thinking Budget**: `0` — Disabled, as advanced reasoning isn't required for this use case.
+- **System Instruction**: Defines the chatbot's personality as a "friendly cat assistant" with a clear, concise, and playful tone. Customize this to adjust the chatbot's behavior.
+
+Example configuration in Python:
+
+```python
+client = genai.Client(api_key=api_key)
+return {
+    'client': client,
+    'model': 'gemini-2.5-flash',
+    'config': types.GenerateContentConfig(
+        temperature=0.5,
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+        system_instruction=[
+            types.Part.from_text(
+                text="You are a friendly cat assistant. You communicate in a clear and concise way while keeping a light cat-like personality—curious, playful, and helpful."
+            ),
+        ],
+}
+```
 
 ## Thread Safety Note
 
