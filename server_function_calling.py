@@ -37,7 +37,9 @@ def load_env():
         except Exception as e:
             print(f"Warning: Failed to read .env file: {e}")
 
-# Define function declaration for the model
+# Define function declarations for the model
+
+# Function with 2 arguments
 weather_function = {
     "name": "get_weather",
     "description": "Gets the weather forecast for a given location and date.",
@@ -57,15 +59,163 @@ weather_function = {
     },
 }
 
+# Function without argument
+trivia_function = {
+    "name": "get_cat_trivia",
+    "description": "Returns a random cat trivia fact.",
+    "parameters": {
+        "type": "object",
+        "properties": {},
+    },
+}
+
+# Function with optional argument (use default)
+quiz_function = {
+    "name": "get_quiz",
+    "description": "Returns a quiz question. If no topic is provided, defaults to 'random'.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "topic": {
+                "type": "string",
+                "description": "The quiz topic. Defaults to 'history' if not provided.",
+                "enum": ["history", "science"],
+            },
+        },
+        "required": [],
+    },
+}
+
 # get_weather api handler 
 def get_weather(args):
     """
-    This is a mock function for demonstration purposes.
-    In a real application, you would implement the logic to
-    call a weather API with the provided arguments.
+    This is a mock function that returns random weather data.
     """
-    print(f"Calling the weather API for {args['location']} on {args['date']}")
-    return {"location": args["location"], "date": args["date"], "temperature": "15°C", "condition": "Cloudy"}
+    print(f"Calling the mock weather API for {args['location']} on {args['date']}")
+    # Generate a random temperature
+    temperature = random.randint(15, 35) # degrees Celsius
+    # Choose a random weather condition from a list
+    conditions = ["Sunny", "Cloudy", "Rainy", "Snowy", "Windy"]
+    condition = random.choice(conditions)
+    # Return the randomized data
+    return {
+        "location": args["location"], 
+        "date": args["date"], 
+        "temperature": f"{temperature}°C",
+        "condition": condition
+    }
+
+# get_cat_trivia api handler
+def get_cat_trivia(args):
+    """
+    Returns a random trivia question and answer from a predefined list.
+    """
+    trivia_list = [
+        {
+            "question": "What is the term for a group of cats?",
+            "answer": "A clowder"
+        },
+        {
+            "question": "Which breed of cat is known for having no tail?",
+            "answer": "Manx"
+        },
+        {
+            "question": "What is the name of the cat in the Harry Potter series who belongs to Argus Filch?",
+            "answer": "Mrs. Norris"
+        },
+        {
+            "question": "What is the primary source of energy for a cat’s diet?",
+            "answer": "Protein (cats are obligate carnivores)"
+        },
+        {
+            "question": "Which ancient civilization revered cats and often mummified them?",
+            "answer": "Ancient Egypt"
+        },
+        {
+            "question": "What is the name of the famous cartoon cat who constantly chases Jerry the mouse?",
+            "answer": "Tom"
+        }
+    ]
+    # Use random.choice() to select one dictionary from the list
+    random_trivia = random.choice(trivia_list)
+    # Return the selected trivia
+    return random_trivia
+
+# get_quiz api handler
+def get_quiz(args):
+    """
+    Returns a random trivia question and answer based on the specified topic.
+    """
+    history_trivia = [
+        {
+            "question": "Who was the first president of the United States?",
+            "answer": "George Washington"
+        },
+        {
+            "question": "In which year did Christopher Columbus first sail to the Americas?",
+            "answer": "1492"
+        },
+        {
+            "question": "What ancient wonder, located in Egypt, is the only one of the Seven Wonders of the Ancient World still standing?",
+            "answer": "The Great Pyramid of Giza"
+        },
+        {
+            "question": "In which year did the United States declare its independence?",
+            "answer": "1776"
+        },
+        {
+            "question": "Who was the first emperor of Rome?",
+            "answer": "Augustus"
+        },
+        {
+            "question": "The Great Wall of China was built to protect against which invaders?",
+            "answer": "The Mongols"
+        }
+    ]
+
+    science_trivia = [
+        {
+            "question": "What gas do plants absorb from the air to perform photosynthesis?",
+            "answer": "Carbon dioxide"
+        },
+        {
+            "question": "What is the name of the closest planet to the Sun?",
+            "answer": "Mercury"
+        },
+        {
+            "question": "What is the primary source of energy for Earth’s climate system?",
+            "answer": "The Sun"
+        },
+        {
+            "question": "What is the largest organ in the human body?",
+            "answer": "The skin"
+        },
+        {
+            "question": "What is the chemical symbol for gold?",
+            "answer": "Au"
+        },
+        {
+            "question": "What force keeps planets in orbit around the sun?",
+            "answer": "Gravity"
+        }
+    ]
+
+    # Use a dictionary to map topic names to their trivia lists
+    quiz_topics = {
+        "history": history_trivia,
+        "science": science_trivia
+    }
+
+    # Get the topic from the arguments dictionary
+    # topic = args.get("topic", "history") # defaulting to a general topic if not found
+    topic = args.get("topic")
+    
+    # Check if the topic exists and select a random quiz
+    if topic in quiz_topics:
+        selected_quiz = random.choice(quiz_topics[topic])
+        return selected_quiz
+    else:
+        return {"error": f"Topic '{topic}' not found. Please choose from history or science."}
 
 # Dispatcher calls the function needed
 def run_api_tool(name, args):
@@ -75,9 +225,9 @@ def run_api_tool(name, args):
     # Create a dictionary to map function names (strings) to function objects
     tool_map = {
         "get_weather": get_weather,
+        "get_cat_trivia": get_cat_trivia,
+        "get_quiz": get_quiz,
         # Add other functions here as you implement them
-        # "get_location": get_location,
-        # "get_directions": get_directions,
     }
     # Check if the function name exists in our map
     if name in tool_map:
@@ -114,7 +264,7 @@ def init_gemini():
         print(system_instruction_text)
 
         client = genai.Client(api_key=api_key)
-        tools = types.Tool(function_declarations=[weather_function])
+        tools = types.Tool(function_declarations=[weather_function, trivia_function, quiz_function]) # Add tools here
         return {
             'client': client,
             'model': 'gemini-2.5-flash-lite',  # Consistent model name
