@@ -52,7 +52,7 @@ weather_function = {
             },
             "date": {
                 "type": "string",
-                "description": "The daye in YYYY-MM-DD format",
+                "description": "The date in YYYY-MM-DD format",
             },
         },
         "required": ["location", "date"],
