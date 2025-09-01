@@ -96,7 +96,9 @@
                 const messages = await response.json();
                 const chatHistory = document.getElementById('chat-history');
                 chatHistory.innerHTML = '';
-                messages.forEach(msg => {
+                messages
+                .filter(msg => msg.parts[0]?.text) // Show only the text part, exclude functionCall and functionResponse
+                .forEach(msg => {
                     const div = document.createElement('div');
                     div.className = `message ${msg.role}`;
                     div.textContent = `${msg.role}: ${msg.parts[0].text}`;
