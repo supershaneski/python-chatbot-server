@@ -1,14 +1,10 @@
 # python-chatbot-server
 
-A Python-based **RESTful chatbot API server** powered by [Google’s Gemini API](https://ai.google.dev/gemini-api/docs). The API is designed for flexible integration with any frontend, including web apps built with React or mobile apps with Flutter.
-
-To allow for quick testing and exploration, a simple web interface is provided. For developers who may not have an API key, the server includes a fallback to mock responses.
+A simple **RESTful chatbot API server** built with Python and [Google’s Gemini API](https://ai.google.dev/gemini-api/docs), designed as an easy-to-follow example for beginners learning Gemini API. It can integrate with frontends like React or Flutter and includes a basic web interface for quick testing. For those who may not have an API key, the server includes a fallback to mock responses.
 
 ---
 
-**RESTful Chatbot APIサーバー**。[Google Gemini API](https://ai.google.dev/gemini-api/docs) を活用した、Python 製のサーバーです。React の Web アプリや Flutter のモバイルアプリなど、あらゆるフロントエンドと連携できるよう設計されています。
-
-テストとコードの確認をスムーズに行えるよう、シンプルな Web インターフェースも用意しました。API キーがなくても動作するよう、モック応答にフォールバックする機能も備わっています。
+Pythonと[GoogleのGemini API](https://ai.google.dev/gemini-api/docs)を使って作られたシンプルな**RESTfulチャットボットAPIサーバー**です。Gemini APIを学ぶ初心者のための分かりやすい例として設計されています。ReactやFlutterのようなフロントエンドと統合でき、素早いテスト用に基本的なウェブインターフェースも含まれています。APIキーを持っていない人のために、モックレスポンスへのフォールバック機能も備えています。
 
 ## Get Started
 
@@ -56,8 +52,11 @@ Follow these steps to run the chatbot server and try it out:
    If you don’t have an API key, leave `GEMINI_API_KEY` blank to use mock responses.
 
 5. **Run the server**:
+  
    ```sh
-   python3 server.py
+   python3 server.py # normal chat
+   # or
+   python3 server_function_calling.py # chat with function calling
    ```
 
 6. **Try it out**:
@@ -201,6 +200,59 @@ return {
         ],
 }
 ```
+
+### Function Calling
+
+Function calling lets the chatbot trigger actions (like fetching weather data) based on user input. To keep things simple, the server with function calling is separate, so you can compare it with the basic server and learn step-by-step.
+
+#### Running the Server with Function Calling
+Start the server with function calling using:
+
+```sh
+python3 server_function_calling.py
+```
+
+For details on function calling, check the [Gemini API function calling documentation](https://ai.google.dev/gemini-api/docs/function-calling?example=weather).
+
+#### Defining Functions
+Functions are defined using a [JSON schema](https://json-schema.org/understanding-json-schema/basics). Below is an example for a `get_weather` function:
+
+```javascript
+weather_function = {
+    "name": "get_weather",
+    "description": "Gets the weather forecast for a given city and date.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "The city name, e.g., 'San Francisco'",
+            },
+            "date": {
+                "type": "string",
+                "description": "The date in YYYY-MM-DD format, e.g., '2025-09-01'",
+            },
+        },
+        "required": ["location", "date"],
+    },
+}
+```
+
+**Tips for Writing Functions**:
+- Use **clear names and descriptions** to make the function’s purpose obvious.
+- Specify **properties** and their descriptions, including examples where possible.
+- Decide which properties are **required** (e.g., `location` and `date` above) or optional, based on the function’s needs.
+- Check out additional examples:
+  - `trivia_function`: A function with **no arguments**, useful for instant actions like generating trivia.
+  - `quiz_function`: A function with **optional arguments**, ideal for flexible queries.
+
+#### How It Works
+In this project, functions return **mock responses** to simulate real-world actions (e.g., calling a weather API). In production, you’d replace these with actual API calls or custom logic.
+
+The server supports:
+- **Parallel function calling**: Handling multiple function calls in a single response.
+- **Subsequent function calls**: If a response isn’t sufficient, the model may call the same function again or trigger a different one. This is managed in the `process_gemini_response` function using recursion, with a limit of `MAX_CALLS = 7` to prevent excessive calls.
+
 
 ## Thread Safety Note
 
